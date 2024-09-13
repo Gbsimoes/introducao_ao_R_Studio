@@ -74,13 +74,13 @@ As **VARIÁVEIS** possuem algumas classificações, onde podemos ter **variávei
 **DLB**: Double. São dados avaliados pelo R como números com 2 casas decimais.\
 **Exemplo**: `4.10, 8.10, 6.99, 1.45, 12.15, 110.10, etc.`, *é uma variável numérica*.
 
-**FCT**: Fatores (variáveis categóricas). Um exemplo é a *Variável Categórica Nominal Dicotômica*, onde se tem apenas 2 (duas) categorias. \
+**FCT**: Fatores (variáveis categóricas). Um exemplo é a *Variável Categórica Nominal Dicotômica*, onde se tem apenas 2 (duas) categorias.\
 **Exemplo**: Masculino e Feminino.
 
 **ORD**: Variável ordinal (variáveis categóricas). Um exemplo é a *Variável Categória Ordinal*, onde se tem várias categorias e existe ordem entre elas.\
 **Exemplo**: Ensino Fundamental, Ensino Médio, Ensino Superior.
 
-**CHR**: Caracteres (texto). São textos, dados que são representados entre aspas. \
+**CHR**: Caracteres (texto). São textos, dados que são representados entre aspas.\
 **Exemplo**: `"Gabriel"`, `"Joao"`, `"Ventilador"`, `"Mesa"`.
 
 ![](images/variaveis_r.png)
@@ -167,7 +167,7 @@ sd(data$idade) # o sinal de $ após data, é para escolher qual coluna a regra d
 
 Tabelas podem ser **LARGAS**, ao molde que conhecemos do excel... com várias colunas na horizontal, mas também podem ser **LONGAS**... onde os valores estarão uns sobre os outros, em uma única coluna.
 
-`pivot_longer()` transforma uma tabela em **TABELA LONGA**. \
+`pivot_longer()` transforma uma tabela em **TABELA LONGA**.\
 `pivot_wider()` transforma uma tabela em **TABELA LARGA**.
 
 Vamos ver isso na prática mais adiante, não se preocupe. Antes disso, precisamos aprender a codificar algumas variáveis.
@@ -186,21 +186,121 @@ Iremos trocar os números, por seus textos correspondentes, para uma planilha ma
 
 ```{r}
 
-dados <- read.csv("banco_codi.csv", sep = ';', dec = '.') # pegando o arquivo .csv do diretório já previamente definido na 
+# ativando as livrarias.
+
+library(dplyr)
+library(readr)
+library(tibble)
+
+dados <- read.csv("banco_codi.csv", sep = ';', dec = '.') # pegando o arquivo .csv do diretório já previamente definido na aula_1.
 
 glimpse(dados) # se reparar bem, genero e grau estao como INT.
 
 dados$Genero <- factor(dados$Genero,
                        labels = c("M", "F"),
                        levels = c(0, 1))
-# a funcao FACTOR incluiu M e F, respectivamente, para 0 e 1.
+# a funcao FACTOR incluiu M e F, respectivamente, no lugar de 0 e 1 na coluna GENERO.
 
 dados$Grau_de_escolaridade <- factor(dados$Grau_de_escolaridade,
                                      labels = c("Fundamental", "Medio", "Superior"),
                                      levels = 0:2, ordered = TRUE)
 # a funcao FACTOR incluiu os graus de escolaridade.
 
-glimpse(dados) # repare que agora genero é FCT e grau é ORD.
+glimpse(dados) # repare que agora genero é classificado em FCT e grau, ORD.
 ```
 
+Campos codificados, parabéns! Agora, repare que alguns campos da sua base de dados constam como ***NA***. O R identifica os valores ausentes e os classifica dessa forma, são os NA - missing values.
+
+Não recomendo que mantenha estes valores como NA, em alguns casos isto pode prejudicar a sua análise, ou avaliações estatísticas / plotagem de gráficos.
+
+## Codificando dados ausentes - NA (missing values)
+
+Basicamente, iremos atribuir um valor para campos NA, e este valor precisa ser ABERRANTE e COMPLETAMENTE diferente dos valores que está buscando e/ou que são descritos na sua tabela. E porquê isso? Para que, posteriormente, você possa identificar estes valores e ignorá-los, sabendo que estes eram campos anteriormente vazios.
+
+Você pode descobrir se existem valores ausentes na sua base usando `is.na()`. Esta função irá te mostrar em **TODA A BASE**, quais campos tem ***NA*** (representado por `TRUE`). Esta opção pode não ser recomendada para bases com muitas linhas, teria que ver linha por linha.
+
+Outra opção é o `anyNA()`, que vai mostrar `TRUE` como resultado final, caso existam ***NA*** na sua base. Mas não vai especificar as posições.
+
+```{r}
+
+is.na(dados) # os campos TRUE significam que são campos NA.
+
+anyNA(dados, recursive = FALSE) # o resultado [1] TRUE significa que existem campos NA na sua base.
+
+# vamos pedir ao R que inclua o valor -999 no lugar dos NA.
+
+dados[is.na(dados)] <- 999
+
+view(dados)
+```
+
+ATENÇÃO: Os campos de variáveis numéricas que estavam como ***NA*** foram substituídos por **999**. Entretanto, as variáveis fatoriais (`FCT`) e ordinais (`ORD`) mantiveram o ***NA***.\
+Isso acontece porque esta função não funciona para este tipo de variável.
+
 ## Hora de praticar!
+
+Ao invés de utilizarmos uma planilha previamente pronta, que tal criarmos a nossa própria?
+
+Vamos criar um `data.frame()` que contenha as seguintes colunas:
+
+1.  Paciente (apenas números);
+
+2.  Idade;
+
+3.  Genero (inclua 0 para M, e 1 para F - **para que possa praticar codificação**)
+
+4.  Altura (em *cm*)
+
+5.  Peso (em *kg*)
+
+Faça pelo menos 10 pacientes, para praticar mesmo as etapas de criação de coluna e vetor. Lembre-se que compreender estas etapas será fundamental para passos futuros.
+
+### Criando data.frame
+
+```{r}
+
+teste <- data.frame(
+            paciente = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+            idade = c(14, 16, 23, 10, 87, 38, 20, 51, 44, 28),
+            genero = c(0, 1, 1, 1, 0, 1, 0, 0, 1, 0),
+            altura = c(140, 138, 153, 101, 160, 192, 167, 151, 144, 184),
+            peso = c(45, 80, 65, 25, 55, 102, 70, 81, 61, 74)
+)
+```
+
+### Variáveis e estatística
+
+```{r}
+
+glimpse(teste) # o GENERO precisa ser codificado, posteriormente
+
+sd(teste$idade) # desvio padrão na idade
+sd(teste$peso) # desvio padrão no peso
+
+summary(teste) # minima, media, mediana, maxima e 1º/3º quartil de todas as colunas.
+```
+
+### Codificando
+
+```{r}
+
+teste$genero <- factor(teste$genero,
+                       labels = c("M", "F"),
+                       levels = 0:1)
+
+glimpse(teste)
+```
+
+Finalizado! Você pode brincar mais com seus dados, deixando espaços em branco (***NA***), ou pivotando a tabela. Segue um exemplo de pivotagem:
+
+```{r}
+
+# transformando a tabela larga (wide) em longa (long).
+
+teste_longo <- pivot_longer(teste,
+                            cols = c(idade, peso, altura),
+                            values_to = "dados",
+                            names_to = "variaveis")
+
+view(teste_longo) #veja como a tabela se apresenta de forma diferente.
+```
