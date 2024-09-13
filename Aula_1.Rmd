@@ -11,7 +11,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+### R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -21,7 +21,7 @@ When you click the **Knit** button a document will be generated that includes bo
 summary(cars)
 ```
 
-## Including Plots
+### Including Plots
 
 You can also embed plots, for example:
 
@@ -217,7 +217,7 @@ setwd("C:\Users\User\Desktop")
 
 dados <- read.csv("banco_teste.csv", sep = ';', dec = ',')
 
-# NÃO SE ESQUEÇA DE ATUALIZAR OS DADOS ACIMA PARA O CAMINHO DO SEU COMPUTADOR, AGORA É A HORA QUE REALMENTE TEM QUE FUNCIONAR PARA VOCÊ!
+# NÃO SE ESQUEÇA DE ATUALIZAR OS DADOS ACIMA PARA O CAMINHO DO SEU COMPUTADOR, É AQUI QUE VAI TESTAR SE REALMENTE ENTENDEU!
 ```
 
 Se tudo der certo, na aba **ENVIRONMENT**, você verá que apareceu um novo *dado* (*data*). Isso ocorre porquê você atribuiu ao código, **um objeto**, que é o `dados` que vem antes da seta (`<-`).
@@ -234,7 +234,7 @@ Poderia ser então:
 
 ```{r}
 
-# Parabéns! Use o comando abaixo para ver sua base de dados.
+# Use o comando abaixo para ver sua base de dados.
 
 view(dados) # Você irá abrir uma nova aba com sua base de dados, completa.
 ```
@@ -244,6 +244,20 @@ view(dados) # Você irá abrir uma nova aba com sua base de dados, completa.
 # Outra opção de comando para visualizar seus dados.
 
 glimpse(dados) # Você irá ver no console algumas informações dos seus dados.
+```
+
+```{r}
+
+# Opção para ver só o cabecalho (porção superior) dos seus dados.
+
+head(dados) # head de cabeça.
+```
+
+```{r}
+
+# Opção para ver só o rodape (porção final) dos seus dados.
+
+tail(dados) # tail de cauda.
 ```
 
 Parabéns! Se tudo correu bem até aqui, você está pronto para as próximas etapas.
