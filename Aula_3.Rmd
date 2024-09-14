@@ -1,0 +1,162 @@
+---
+title: "Aula_3"
+author: "Gabriel Benevides"
+date: "2024-09-13"
+output: html_document
+---
+
+# Cabeçalho
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+### Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# Trabalhando o banco de dados
+
+Nem sempre os dados que recebermos vai estar exatamente como gostaríamos, e isso não é um problema. Assim como codificações, outros ajustes podem ser feitos para facilitar sua visualização dos dados, e também para que sejam bem aplicados nas regras estatísticas.
+
+Já sabemos manusear o R, trabalhar com dados mais simples e vizualisá-lo de forma mais genérica, além de extrair dados estatísticos básicos.\
+Mas como faremos para apresentar estes dados? Essa é a importância desta aula.
+
+A confecção de gráficos é uma etapa essencial para sua análise de dados, é seu resultado final e uma ótima forma visual de apresentar aquilo que analisou.
+
+## Remover coluna
+
+Vamos supor, que você tenha um `data.frame()` tenha as colunas: *paciente*, *idade*, *genero*, *altura* e *peso*. Você não precisa da **IDADE** para sua análise, este não será um dado relevante, e por isso você prefere remover para não te atrapalhar, utilizaremos então a função `select()`.
+
+```{r}
+
+# ativando livrarias
+
+library(dplyr)
+library(readr)
+library(tidyverse)
+
+# criando data.frame
+
+dados <- data.frame(
+            paciente = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+            idade = c(14, 16, 23, 10, 87, 38, 20, 51, 44, 28),
+            genero = c(0, 1, 1, 1, 0, 1, 0, 0, 1, 0),
+            altura = c(140, 138, 153, 101, 160, 192, 167, 151, 144, 184),
+            peso = c(45, 80, 65, 25, 55, 102, 70, 81, 61, 74)
+)
+
+# removendo a coluna IDADE com select()
+
+dados_sel <- dados %>% select(-idade)
+
+# removendo a coluna IDADE com mutate()
+
+dados_mut <- dados %>% mutate(idade = NULL)
+```
+
+O operador `%>%` é um **PIPE**, serve para conectar funções de maneira encadeada, torna o código no R mais limpo e mais fácil de ser lido. Ou seja, você pode melhorar a forma escrita do seu código.
+
+Vamos supor, que você quer criar uma nova coluna na planilha dados com a função `mutate()`, que organizar seus dados com a função `arrange()` e ver as primeiras 10 linhas com a função `head(10)`.\
+Teria então: `resultado <- head(arrange(mutate(dados, nova_coluna = Coluna1 * 2), Coluna1), 10)`
+
+## Usando PIPE
+
+Com o **PIPE** `%>%`, você poderia descrever da seguinte forma:
+
+`resultado <- dados %>%`
+
+`mutate(nova_coluna = Coluna1 * 2) %>%`
+
+`arrange(Coluna1) %>%`
+
+`head(10)`
+
+Repare que o código e as funções usadas são as mesmas, porém, ficam mais espaçadas e mais fáceis de entender o que cada função está executando.
+
+No caso acima, o que acontece é:
+
+1.  O objeto `dados` é passado para a função `mutate()`.
+
+2.  O resultado de `mutate()` é então passado para `arrange()`.
+
+3.  Por fim, o resultado de `arrange()` é passado para `head()`.
+
+Você pode incluir um **PIPE** na sua linha de código com os atalhos:
+
+`Ctrl + Shift + M` para **Windows**/**Linux**\
+`Cmd + Shift + M` para **Mac**
+
+## Incluindo coluna
+
+Você pode também precisar incluir colunas, e a função `mutate()` vai te ajudar nesta ação.
+
+```{r}
+
+# criaremos a coluna CAPITAL para o objeto DADOS.
+
+dados2 <- dados %>% mutate(capital = c("SP")) # se você quiser a mesma capital para todos.
+
+dados2 <- dados %>% mutate(capital = c("SP", "MG", "SP", "PE", "BA", "MA", "SC", "MG", "RJ", "ES")) # se você quiser especificar a capital de cada indivíduo.
+```
+
+## Selecionando colunas
+
+Você pode também criar uma base de dados apenas com o que quer, sem mexer na sua base principal, ao invés de remover colunas. Para isso, usaremos o `select()`.
+
+```{r}
+
+# selecionar as colunas: paciente, idade e altura da base DADOS.
+
+dados_filtrado <- dados %>% select(paciente, idade, altura)
+
+# selecionar um intervalo de colunas (da coluna 1 até a coluna 3)
+
+dados2 <- dados %>% select(paciente:genero)
+```
+
+## Renomear e Reordenar colunas
+
+Você pode alterar o nome de uma coluna (renomear), e pode alterar a ordem das colunas (reordenar), trazendo para o começo as colunas de interesse.
+
+Em ambas situações, usaremos a função `select()`, mas precisaremos incluir ao final da linha de código o `everything()`, garantindo que o select irá alterar as colunas de interesse e manter todas as demais colunas.
+
+```{r}
+
+# renomeando a coluna PACIENTE para PACIENTES.
+
+dados2 <- dados %>% select(pacientes = paciente, everything())
+# você deve colocar primeiro qual nome você quer dar para a coluna, e depois vincular ao nome já existente.
+
+# reordenando as colunas, para começar com IDADE.
+
+dados3 <- dados %>% select(idade, everything())
+# lembre-se, o everything() garante que as demais colunas sejam preservadas, sendo apenas reorganizadas.
+```
+
+Renomear uma coluna também pode ser feito através da função `rename()`.
+
+```{r}
+
+# alterando a coluna IDADE por ANOS.
+
+dados4 <- dados %>% rename(anos = idade)
+```
+
+## Novas colunas a partir de colunas existentes
