@@ -1,11 +1,11 @@
+# Cabeçalho
+
 ---
 title: "Aula_2"
 author: "Gabriel Benevides"
 date: "2024-09-12"
 output: html_document
 ---
-
-# Cabeçalho
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -31,7 +31,7 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-## Conceitos básicos
+# 1. Conceitos básicos
 
 Agora que temos a base de compreensão, precisamos entender alguns conceitos internos, ou seja, que são utilizados dentro do R.
 
@@ -85,9 +85,9 @@ As **VARIÁVEIS** possuem algumas classificações, onde podemos ter **variávei
 
 ![](images/variaveis_r.png)
 
-Compreender as variáveis é importante, pois em alguns casos será necessário o manuseio (codificação) destas variáveis. [Codificando variáveis] nada mais é que dizer ao R que, por exemplo, o que ele identificou como *número inteiro* (**INT**) na verdade é uma *variável categórica* (**FCT**).
+Compreender as variáveis é importante, pois em alguns casos será necessário o manuseio (codificação) destas variáveis. [#Codificando variáveis] nada mais é que dizer ao R que, por exemplo, o que ele identificou como *número inteiro* (**INT**) na verdade é uma *variável categórica* (**FCT**).
 
-## Tabelas e vetor
+# 2. Tabelas e vetor
 
 Tabelas são bases de dados muito usadas em R, e podemos testar com arquivos `.csv` já existentes, mas podemos criar as nossas para exercitar o manuseio, controlando o tamanho, os dados e para que não fique muito pesado.
 
@@ -163,7 +163,7 @@ skim(data) # ou skim(data_tibble), se preferir.
 sd(data$idade) # o sinal de $ após data, é para escolher qual coluna a regra de desvio padrão deve ser aplicada. Lembre-se que SD não se aplica a caracteres.
 ```
 
-## Pivotando base de dados
+# 3. Pivotando base de dados
 
 Tabelas podem ser **LARGAS**, ao molde que conhecemos do excel... com várias colunas na horizontal, mas também podem ser **LONGAS**... onde os valores estarão uns sobre os outros, em uma única coluna.
 
@@ -172,7 +172,7 @@ Tabelas podem ser **LARGAS**, ao molde que conhecemos do excel... com várias co
 
 Vamos ver isso na prática mais adiante, não se preocupe. Antes disso, precisamos aprender a codificar algumas variáveis.
 
-## Codificando variáveis
+# 4. Codificando variáveis
 
 Para realizar a codificação, precisaremos da livraria **DPLYR**, `library(dplyr)`, precisamos lembrar como se referencia uma coluna (`OBJETO$NOME_DA_COLUNA`), usar vetor `c()`, saber de que forma a variável está apresentada na base de dados e em que quero transformá-la.
 
@@ -213,7 +213,7 @@ Campos codificados, parabéns! Agora, repare que alguns campos da sua base de da
 
 Não recomendo que mantenha estes valores como NA, em alguns casos isto pode prejudicar a sua análise, ou avaliações estatísticas / plotagem de gráficos.
 
-## Codificando dados ausentes - NA (missing values)
+# 5. Codificando dados ausentes - NA (missing values)
 
 Basicamente, iremos atribuir um valor para campos NA, e este valor precisa ser ABERRANTE e COMPLETAMENTE diferente dos valores que está buscando e/ou que são descritos na sua tabela. E porquê isso? Para que, posteriormente, você possa identificar estes valores e ignorá-los, sabendo que estes eram campos anteriormente vazios.
 
@@ -237,7 +237,7 @@ view(dados)
 ATENÇÃO: Os campos de variáveis numéricas que estavam como ***NA*** foram substituídos por **999**. Entretanto, as variáveis fatoriais (`FCT`) e ordinais (`ORD`) mantiveram o ***NA***.\
 Isso acontece porque esta função não funciona para este tipo de variável.
 
-## Hora de praticar!
+# 6. Hora de praticar!
 
 Ao invés de utilizarmos uma planilha previamente pronta, que tal criarmos a nossa própria?
 

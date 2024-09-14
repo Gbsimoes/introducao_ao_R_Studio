@@ -31,7 +31,7 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-## Introducao as livrarias
+# 1. Introducao as livrarias
 
 Livrarias (library) são ferramentas que serão utilizadas dentro do R Studio para facilitar suas análises de dados. Pense nas livrarias como extensões do R, que vão deixar sua linha de código menor e mais funcional.
 
@@ -77,7 +77,7 @@ Na seta preta, temos o símbolo do C+ onde podemos adicionar alguns blocos, e al
 
 Uma caixa com {r} será criada, e dentro dela você pode digitar o que desejar.
 
-## Instalando pacotes
+# 2. Instalando pacotes
 
 ```{r}
 # Em caso de erro, baixe as bibliotecas novamente para atualizações.
@@ -137,7 +137,7 @@ library(dplyr)
 
 Você não precisa chamar todas as livrarias, escolha qual vai usar, e ative apenas ela. Aqui estão apenas exemplos que podem ser funcionais, por isso todos já foram instalados.
 
-## Diretório de trabalho
+# 3. Diretório de trabalho
 
 O diretório de trabalho é o local onde o R Studio vai buscar os arquivos que você quer, e também o local onde ele vai salvar os arquivos que você criar, como plots (gráficos) e imagens. Quando seu R Studio é aberto pela primeira vez, ele já define um local padrão em que ele irá buscar seus arquivos, **mas isso não significa que ele está procurando no local certo**.
 
@@ -195,7 +195,7 @@ Se você não definir seu diretório de trabalho, precisaria colocar o código d
 
 Lembre-se, o caminho é só um exemplo, tudo vai depender de onde realmente seu arquivo está!
 
-# Hora de praticar!
+# 4. Hora de praticar!
 
 Se tudo correu bem até aqui, parabéns! Você já obteve muita informação, mas isso tudo fica muito confuso porquê tem muito texto, não é mesmo?
 
@@ -230,7 +230,7 @@ Poderia ser então:
 
 `dados = read.csv("banco_teste.csv", sep = ';', dec = ',')`
 
-## Visualizar sua base de dados
+### Visualizar sua base de dados
 
 ```{r}
 
