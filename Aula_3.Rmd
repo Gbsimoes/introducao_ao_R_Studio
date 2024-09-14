@@ -1,11 +1,11 @@
+# Cabeçalho
+
 ---
 title: "Aula_3"
 author: "Gabriel Benevides"
 date: "2024-09-13"
 output: html_document
 ---
-
-# Cabeçalho
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -31,7 +31,7 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-# Trabalhando o banco de dados
+# 1. Trabalhando o banco de dados
 
 Nem sempre os dados que recebermos vai estar exatamente como gostaríamos, e isso não é um problema. Assim como codificações, outros ajustes podem ser feitos para facilitar sua visualização dos dados, e também para que sejam bem aplicados nas regras estatísticas.
 
@@ -40,17 +40,22 @@ Mas como faremos para apresentar estes dados? Essa é a importância desta aula.
 
 A confecção de gráficos é uma etapa essencial para sua análise de dados, é seu resultado final e uma ótima forma visual de apresentar aquilo que analisou.
 
-## Remover coluna
-
-Vamos supor, que você tenha um `data.frame()` tenha as colunas: *paciente*, *idade*, *genero*, *altura* e *peso*. Você não precisa da **IDADE** para sua análise, este não será um dado relevante, e por isso você prefere remover para não te atrapalhar, utilizaremos então a função `select()`.
+### Ativando livrarias
 
 ```{r}
 
-# ativando livrarias
+# DPLYR e TIDYVERSE para funções, e READR se quiser utilizar alguma base já existente, para importar.
 
 library(dplyr)
 library(readr)
 library(tidyverse)
+```
+
+### Remover coluna
+
+Vamos supor, que você tenha um `data.frame()` tenha as colunas: *paciente*, *idade*, *genero*, *altura* e *peso*. Você não precisa da **IDADE** para sua análise, este não será um dado relevante, e por isso você prefere remover para não te atrapalhar, utilizaremos então a função `select()`.
+
+```{r}
 
 # criando data.frame
 
@@ -76,7 +81,7 @@ O operador `%>%` é um **PIPE**, serve para conectar funções de maneira encade
 Vamos supor, que você quer criar uma nova coluna na planilha dados com a função `mutate()`, que organizar seus dados com a função `arrange()` e ver as primeiras 10 linhas com a função `head(10)`.\
 Teria então: `resultado <- head(arrange(mutate(dados, nova_coluna = Coluna1 * 2), Coluna1), 10)`
 
-## Usando PIPE
+### Usando PIPE
 
 Com o **PIPE** `%>%`, você poderia descrever da seguinte forma:
 
@@ -103,7 +108,7 @@ Você pode incluir um **PIPE** na sua linha de código com os atalhos:
 `Ctrl + Shift + M` para **Windows**/**Linux**\
 `Cmd + Shift + M` para **Mac**
 
-## Incluindo coluna
+### Incluindo coluna
 
 Você pode também precisar incluir colunas, e a função `mutate()` vai te ajudar nesta ação.
 
@@ -116,7 +121,7 @@ dados2 <- dados %>% mutate(capital = c("SP")) # se você quiser a mesma capital 
 dados2 <- dados %>% mutate(capital = c("SP", "MG", "SP", "PE", "BA", "MA", "SC", "MG", "RJ", "ES")) # se você quiser especificar a capital de cada indivíduo.
 ```
 
-## Selecionando colunas
+### Selecionando colunas
 
 Você pode também criar uma base de dados apenas com o que quer, sem mexer na sua base principal, ao invés de remover colunas. Para isso, usaremos o `select()`.
 
@@ -124,14 +129,14 @@ Você pode também criar uma base de dados apenas com o que quer, sem mexer na s
 
 # selecionar as colunas: paciente, idade e altura da base DADOS.
 
-dados_filtrado <- dados %>% select(paciente, idade, altura)
+dado_filtrado <- dados %>% select(paciente, idade, altura)
 
 # selecionar um intervalo de colunas (da coluna 1 até a coluna 3)
 
 dados2 <- dados %>% select(paciente:genero)
 ```
 
-## Renomear e Reordenar colunas
+### Renomear e Reordenar colunas
 
 Você pode alterar o nome de uma coluna (renomear), e pode alterar a ordem das colunas (reordenar), trazendo para o começo as colunas de interesse.
 
@@ -159,4 +164,86 @@ Renomear uma coluna também pode ser feito através da função `rename()`.
 dados4 <- dados %>% rename(anos = idade)
 ```
 
-## Novas colunas a partir de colunas existentes
+### Novas colunas a partir de colunas existentes
+
+Vamos imaginar que você está avaliando **ALTURA**, mas sua tabela `dados` está apresentando estes valores em centímetros (***cm***), e você precisa que seja em metros (***m***).
+
+Criaremos uma nova coluna, chamada `altura_m` onde terá o valor da forma que precisa, e o R irá calcular os valores para você automaticamente, pelas funções utilizadas.
+
+```{r}
+
+dados2 <- dados %>% # a base com a nova coluna se chama dados2
+  mutate(altura_m = altura/100) # criando a coluna altura_m, onde os valores presentes nela serão adquiridos a partir da coluna altura/100.
+```
+
+# Criando condições
+
+Podemos classificar nossos pacientes de acordo com valores presentes na base de dados.\
+Isso é possível com algumas funções, exemplos são `if_else()`, `case_when()` e `_______`.
+
+Vamos criar uma classificação de IMC para os pacientes, de acordo com o IMC. Para isso, vamos precisar de uma coluna de IMC com a função `mutate()` e uma coluna de classificação usando `mutate()` e `if_else()` ou `case_when()`.
+
+```{r}
+
+# criando a coluna de IMC.
+
+dados_imc <- dados %>% 
+  mutate(imc = peso / (altura*altura) * 10000) # está multiplicando por 10000 para retirar as casas decimais
+
+# utilizando o IMC para classificar os pacientes.
+
+dados_imc <- dados_imc %>% 
+  mutate(classificacao = if_else(imc > 25, "sobrepeso", "normal"))
+
+view(dados_imc) # agora temos a coluna IMC e CLASSIFICACAO conforme o IMC.
+```
+
+Você pode criar mais condições, de acordo com variáveis diferentes, não apenas `imc > 25`, para isso, podemos usar `case_when()`. Esta função tem a mesma dinâmica do `if_else()`, entretanto, você não precisa repetir várias vezes a função (mostraremos um exemplo ao final).
+
+```{r}
+
+# utilizando case_when() para criar várias condições.
+
+dados_case <- dados_imc %>% 
+  mutate(classificacao = case_when())
+```
+
+# Manipulando matrizes
+
+Matrizes são bases de dados que contém **exclusivamente** valores numéricos. Ou seja, bases de dados / planilhas que contenham apenas números, sem nenhuma `string` (`"texto"`).
+
+Para isso utilizaremos 2 (duas) funções: `column_to_rownames()` e `as.matrix()`.
+
+Se sua base de dados tiver uma coluna com string, a função `column_to_rownames()` será a responsável por transformar as informações desta coluna na sua referência da linha, o nome daquela linha. É comum que a primeira coluna das bases sejam de *nome do paciente*, *nome do gene*, *nome do mRNA*, etc., e as colunas seguintes são os dados referentes à esse nome.
+
+Já `as.matrix()` irá converter sua base em uma matriz, garantindo que ali contenham apenas valores numéricos e uma coluna de rownames.
+
+### Rownames
+
+```{r}
+
+# criando uma base de dados com nomes de pacientes fictícios
+
+geral <- data.frame(
+            paciente = c("Junior", "Gabriela", "Livia", "Renan", "Maria", "Carla", "Marcelo", "Ana", "Sara", "Gabriel"),
+            idade = c(14, 16, 23, 10, 87, 38, 20, 51, 44, 28),
+            genero = c(0, 1, 1, 0, 1, 1, 0, 1, 1, 0),
+            altura = c(140, 138, 153, 101, 160, 192, 167, 151, 144, 184),
+            peso = c(45, 80, 65, 25, 55, 102, 70, 81, 61, 74)
+)
+
+view(geral) # veja que antes da coluna PACIENTE, uma coluna contando as linhas está presente.
+
+geral_row <- column_to_rownames(geral, "paciente") # transformando a coluna paciente em rowname.
+
+view(geral_row) # veja que agora é a coluna paciente que é sua referência, não possuem mais os números na primeira coluna. os nomes das suas linhas são os nomes dos pacientes.
+```
+
+### Matriz
+
+```{r}
+
+matrix <- as.matrix(geral_row) # transformando a GERAL_ROW em matriz.
+
+# veja no seu environment (ambiente) que a forma como ela se apresenta é diferente, agora você tem uma matriz para trabalhar.
+```
