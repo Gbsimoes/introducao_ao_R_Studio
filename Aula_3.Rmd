@@ -176,10 +176,10 @@ dados2 <- dados %>% # a base com a nova coluna se chama dados2
   mutate(altura_m = altura/100) # criando a coluna altura_m, onde os valores presentes nela serão adquiridos a partir da coluna altura/100.
 ```
 
-# Criando condições
+# 2. Criando condições
 
 Podemos classificar nossos pacientes de acordo com valores presentes na base de dados.\
-Isso é possível com algumas funções, exemplos são `if_else()`, `case_when()` e `_______`.
+Isso é possível com algumas funções, exemplos são `if_else()` e `case_when()`.
 
 Vamos criar uma classificação de IMC para os pacientes, de acordo com o IMC. Para isso, vamos precisar de uma coluna de IMC com a função `mutate()` e uma coluna de classificação usando `mutate()` e `if_else()` ou `case_when()`.
 
@@ -205,10 +205,30 @@ Você pode criar mais condições, de acordo com variáveis diferentes, não ape
 # utilizando case_when() para criar várias condições.
 
 dados_case <- dados_imc %>% 
-  mutate(classificacao = case_when())
+  mutate(classificacao = case_when(imc >= 25 & imc <= 30 ~ "sobrepeso",
+                                   imc > 30 ~ "obesidade 1",
+                                   imc >= 18.5 & imc <25 ~ "normal",
+                                   imc < 18.5 ~ "magreza"))
+
+view(dados_case) # agora a coluna CLASSIFICAÇÃO tem mais categorias.
 ```
 
-# Manipulando matrizes
+E se você quiser fazer esta mesma aplicação com `if_else()`, como seria?
+
+```{r}
+
+# utilizando if_else() para criar várias condições.
+
+dados_if <- dados_imc %>% 
+  mutate(classificacao = if_else(imc >= 25 & imc <= 30 , "sobrepeso", NA),
+         classificacao = if_else(imc > 30, "obesidade 1", classificacao),
+         classificacao = if_else(imc >= 18.5 & imc <25, "normal",classificacao),
+         classificacao = if_else(imc < 18.5, "magreza",classificacao))
+
+# o resultado é o mesmo, as classificações serão iguais. mas perceba como o código fica maior, e mais poluído.
+```
+
+# 3. Manipulando matrizes
 
 Matrizes são bases de dados que contém **exclusivamente** valores numéricos. Ou seja, bases de dados / planilhas que contenham apenas números, sem nenhuma `string` (`"texto"`).
 
@@ -247,3 +267,57 @@ matrix <- as.matrix(geral_row) # transformando a GERAL_ROW em matriz.
 
 # veja no seu environment (ambiente) que a forma como ela se apresenta é diferente, agora você tem uma matriz para trabalhar.
 ```
+
+# 4. Criando gráficos / plots
+
+Um dos melhores e maiores pacotes para a criação de gráficos e personalização destes gráficos e plots é o `Tidyverse` e o `ggplot2`, que está dentro do Tidyverse.
+
+Gráficos e Plots podem se apresentar das mais diversas formas, e vamos apresentar aqui apenas algumas opções. Além disso, é importante se lembrar que cada gráfico pode ser mais eficaz de acordo com o tipo de dado ou a quantidade de dados a serem apresentados.
+
+### Gráfico de Colunas (Barras)
+
+```{r}
+
+# criando gráfico de colunas (barras)
+
+barras <- dados_case %>%  # usando dados_case como base.
+  ggplot() + # chamando ggplot para configurar.
+  aes(x = idade, # definindo o eixo X com os dados da coluna IDADE.
+      y = altura) + # definindo o eixo Y com os dados da coluna ALTURA.
+  geom_col() # define a geometria do gráfico como de colunas (barras).
+
+barras # para visualizar seu gráfico de colunas (barras)
+```
+
+### Gráfico de Pontos
+
+```{r}
+
+# criando gráfico de pontos, mesma dinâmica do exemplo acima.
+
+pontos <- dados_case %>% 
+  ggplot() +
+  aes(x = imc, # imc como eixo X
+      y = altura) + # altura como eixo Y
+  geom_point() # definindo a geometria como gráfico de pontos.
+
+pontos # para visualizar seu gráfico de pontos
+```
+
+### Histograma
+
+```{r}
+
+# criando histograma, mudando apenas a geometria.
+
+histograma <- dados_case %>% 
+  ggplot() +
+  aes(x = imc) + # o histograma é unidimensional, você só pode usar 1 variável, por isso tem apenas eixo X.
+  geom_histogram(binwidth = 1) # geometria de histograma, binwidth define a largura dos intervalos entre as barras. Ajuste conforme necessidade.
+
+histograma # para visualizar seu histograma
+```
+
+Outras formas de plotagem que podem utilizar são: **boxplot** (`geom_boxplot`), **linhas** (`geom_line`), densidade (`geom_density`), e vários outros. A proposta aqui é apenas explicar que, com uma mesma linha de código, alterando o `geom_` e algumas variações de eixo, você pode apresentar dados de diversas formas.
+
+# 5. Personalizando a plotagem
