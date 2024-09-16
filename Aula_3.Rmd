@@ -114,11 +114,11 @@ Você pode também precisar incluir colunas, e a função `mutate()` vai te ajud
 
 ```{r}
 
-# criaremos a coluna CAPITAL para o objeto DADOS.
+# criaremos a coluna ESTADO para o objeto DADOS.
 
-dados2 <- dados %>% mutate(capital = c("SP")) # se você quiser a mesma capital para todos.
+dados2 <- dados %>% mutate(estado = c("SP")) # se você quiser o mesmo estado para todos.
 
-dados2 <- dados %>% mutate(capital = c("SP", "MG", "SP", "PE", "BA", "MA", "SC", "MG", "RJ", "ES")) # se você quiser especificar a capital de cada indivíduo.
+dados2 <- dados %>% mutate(estado = c("SP", "MG", "SP", "PE", "BA", "MA", "SC", "MG", "RJ", "ES")) # se você quiser especificar o estado de cada indivíduo.
 ```
 
 ### Selecionando colunas
@@ -286,7 +286,7 @@ barras <- dados_case %>%  # usando dados_case como base.
       y = altura) + # definindo o eixo Y com os dados da coluna ALTURA.
   geom_col() # define a geometria do gráfico como de colunas (barras).
 
-barras # para visualizar seu gráfico de colunas (barras)
+barras # para visualizar seu gráfico de colunas (barras) execute com ctrl + enter
 ```
 
 ### Gráfico de Pontos
@@ -301,7 +301,7 @@ pontos <- dados_case %>%
       y = altura) + # altura como eixo Y
   geom_point() # definindo a geometria como gráfico de pontos.
 
-pontos # para visualizar seu gráfico de pontos
+pontos # para visualizar seu gráfico de pontos execute com ctrl + enter
 ```
 
 ### Histograma
@@ -315,9 +315,110 @@ histograma <- dados_case %>%
   aes(x = imc) + # o histograma é unidimensional, você só pode usar 1 variável, por isso tem apenas eixo X.
   geom_histogram(binwidth = 1) # geometria de histograma, binwidth define a largura dos intervalos entre as barras. Ajuste conforme necessidade.
 
-histograma # para visualizar seu histograma
+histograma # para visualizar seu histograma execute com ctrl + enter
 ```
 
 Outras formas de plotagem que podem utilizar são: **boxplot** (`geom_boxplot`), **linhas** (`geom_line`), densidade (`geom_density`), e vários outros. A proposta aqui é apenas explicar que, com uma mesma linha de código, alterando o `geom_` e algumas variações de eixo, você pode apresentar dados de diversas formas.
 
 # 5. Personalizando a plotagem
+
+Um plot bonito não está relacionado apenas a dados interessantes, mas também com a forma de apresentação destes dados. Para isso, você precisa saber que pode incluir personalizações ao seu código.
+
+Cores podem ser incluídas com `theme_NOMEDOTEMA()`, você pode definir nome para os eixos e uma legenda com `labs()` e labels para os pontos do gráfico com `geom_label()`.
+
+Em um histograma, por exemplo, você também pode usar `fill()` e `color()` para definir a cor das barras e dos contornos, respectivamente.
+
+# 6. Hora de praticar!
+
+```{r}
+
+# vamos fazer um código completo, desde o data.frame
+
+dados <- data.frame(
+            paciente = c("Junior", "Gabriela", "Livia", "Renan", "Maria", "Carla", "Marcelo", "Ana", "Sara", "Gabriel"),
+            idade = c(14, 16, 23, 10, 87, 38, 20, 51, 44, 28),
+            genero = c("Masculino", "Feminino", "Feminino", "Masculino", "Feminino", "Feminino", "Masculino", "Feminino", "Feminino", "Masculino"),
+            altura = c(140, 138, 153, 101, 160, 192, 167, 151, 144, 184),
+            peso = c(45, 80, 65, 25, 55, 102, 70, 81, 61, 74)
+) # esse parêntese também pode estar após o 74), como preferir.
+
+# incluindo coluna IMC na base de dados.
+
+dados <- dados %>% 
+  mutate(imc = peso / (altura^2) * 10000) # 10000 para mudar as casas
+
+# incluindo coluna CLASSIFICACAO, com base na coluna IMC, com case_when().
+
+dados <- dados %>% 
+  mutate(classificacao = case_when(imc >= 25 & imc <= 30 ~ "sobrepeso",
+                                   imc > 30 ~ "obesidade 1",
+                                   imc >= 18.5 & imc <25 ~ "normal",
+                                   imc < 18.5 ~ "magreza"))
+
+# transformando a coluna PACIENTE em rowname e fazendo do data.frame uma matriz.
+
+dados <- dados %>% 
+  column_to_rownames("paciente") # coluna PACIENTE agora é rowname.
+
+dados <- as.matrix(dados)
+
+# gráfico de pontos relacionando IMC e PESO, colorindo pela CLASSIFICACAO.
+
+pontos <- dados %>% 
+  ggplot() +
+  aes(x = imc,
+      y = peso,
+      color = classificacao) +
+  geom_point()
+
+pontos # para ver o gráfico de pontos execute com ctrl + enter.
+```
+
+### Melhorias visuais do plot
+
+```{r}
+
+# nomeando os eixos, adicionando títulos e legenda.
+
+pontos <- dados %>% 
+  ggplot() +
+  aes(x = imc,
+      y = peso,
+      color = classificacao) +
+  geom_point() +
+  theme_dark() +
+  labs(x = "IMC",
+       y = "Peso em KG",
+       title = "Relacao IMC x Peso",
+       tag = "Figura 1")
+
+pontos # visualizar a tabela personalizada
+```
+
+### Melhorias visuais do plot
+
+```{r}
+
+# tornando o grafico de pontos ainda mais completo
+
+pontos <- dados %>% 
+  ggplot() +
+  aes(x = imc,
+      y = peso,
+      color = classificacao) +
+  geom_point() +
+  geom_label(label = rownames(dados),  vjust = -0.5, hjust = 0.5, size = 2) + # o label será a coluna rownames, vjust/hjust/size é a posição da label
+  theme_classic() + # tema clássico, mas você pode escolher vários outros
+  labs(x = "IMC", # nome do eixo X
+       y = "Peso (KG)", # nome do eixo Y
+       title = "Relacao IMC x Peso", # título do gráfico
+       tag = "Figura 1") # nome da figura (tag)
+
+pontos # visualizar o grafico de pontos
+```
+
+Você terminou! Parabéns! Pode exercitar ao máximo estas personalizações, e suas variações. Lembre-se, cada plot terá uma apresentação e um objetivo diferente.
+
+Para saber qual `geom_` aplicar em seus dados, é importante também compreender quais testes estatísticos se aplicam a cada realidade, e esta não é a proposta até aqui. Mais adiante vamos abordar de forma mais aprofundada estes tópicos, o importante aqui é que você sabe que pode personalizar um gráfico, e ter uma linha de código básica para começar.
+
+Mais ajustes ainda poderiam ser feitos, mas vamos abordar no decorrer de outras aulas, para evitar ficar muito denso.
